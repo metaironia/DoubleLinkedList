@@ -193,6 +193,10 @@ enum ListStatus FastListAddElemAfter (FastList *const list_for_add_elem, const s
 
     LIST_VERIFY (list_for_add_elem);
 
+    if ((list_for_add_elem -> controlItems).free == DUMMY_ELEM_POS)
+        if (FastListIncreaseCapacity (list_for_add_elem) == LIST_STATUS_FAIL)
+            return LIST_STATUS_FAIL;
+
     const size_t free_elem_index    = (list_for_add_elem -> controlItems).free;
     const size_t index_in_list_next = (list_for_add_elem -> mainItems)[index_in_list].next;
 
@@ -216,7 +220,8 @@ enum ListStatus FastListRemoveElem (FastList *const list_for_remove_elem, const 
 
     LIST_VERIFY (list_for_remove_elem);
 
-    FastListFreeElem (list_for_remove_elem, index_in_list_remove);
+    if (FastListFreeElem (list_for_remove_elem, index_in_list_remove) == LIST_STATUS_FAIL)
+        return LIST_STATUS_FAIL;
 
     (list_for_remove_elem -> list_size) -= 1;
 
@@ -228,6 +233,9 @@ enum ListStatus FastListRemoveElem (FastList *const list_for_remove_elem, const 
 enum ListStatus FastListFreeElem (FastList *const list_for_free_elem, const size_t index_in_list_free) {
 
     assert (list_for_free_elem);
+
+    if (index_in_list_free == DUMMY_ELEM_POS)
+        return LIST_STATUS_FAIL;
 
     (list_for_free_elem -> mainItems)[index_in_list_free].value = POISON;
     (list_for_free_elem -> mainItems)[index_in_list_free].next  = -1;
@@ -254,14 +262,32 @@ enum ListStatus FastListGetElem (const FastList *const list_for_get_elem, const 
     return LIST_STATUS_OK;
 }
 
-//enum ListStatus FastListIncreaseCapacity (const FastList *list_for_increase_cap) {
-//
-//    LIST_VERIFY (list_for_increase_cap);
-//
-//    list_for_increase_cap = (FastList *) realloc (list_for_increase_cap,
-//                                                 (list_for_increase_cap -> capacity) * 2);
-//
-//
-//
-//    return LIST_STATUS_OK;
-//}
+enum ListStatus FastListIncreaseCapacity (FastList *const list_for_increase_cap) {
+
+    LIST_VERIFY (list_for_increase_cap);
+
+    size_t prev_capacity = (list_for_increase_cap -> capacity);
+    size_t new_capacity  = prev_capacity * 2;
+
+    size_t size_of_all_elems_in_bytes = sizeof (FastListMainItems) * new_capacity;
+    size_t size_of_new_elems_in_bytes = sizeof (FastListMainItems) * (new_capacity - prev_capacity);
+
+    (list_for_increase_cap -> capacity) = new_capacity;
+
+    FastListMainItems **ptr_to_fast_list_elems = &(list_for_increase_cap -> mainItems);
+
+    *ptr_to_fast_list_elems = (FastListMainItems *) realloc (*ptr_to_fast_list_elems,
+                                                             size_of_all_elems_in_bytes);
+
+    if (ptr_to_fast_list_elems == NULL)
+        return LIST_STATUS_FAIL;
+
+    memset (*ptr_to_fast_list_elems + prev_capacity, 0, size_of_new_elems_in_bytes);
+
+    for (size_t i = prev_capacity; i < new_capacity; i++)
+        FastListFreeElem (list_for_increase_cap, i);
+
+    ON_DEBUG (FAST_LIST_DUMP (list_for_increase_cap));
+
+    return LIST_STATUS_OK;
+}

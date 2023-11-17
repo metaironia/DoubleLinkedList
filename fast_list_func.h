@@ -108,4 +108,6 @@ enum ListStatus FastListFreeElem (FastList *const list_for_free_elem, const size
 enum ListStatus FastListGetElem (const FastList *const list_for_get_elem, const size_t index_in_list,
                                  FastListElem_t *ret_value);
 
+enum ListStatus FastListIncreaseCapacity (FastList *const list_for_increase_cap);
+
 #endif

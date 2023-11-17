@@ -6,7 +6,7 @@
 
 int main (const int argc, const char *argv[]) {
 
-    int list_capacity = 5;
+    int list_capacity = 1;
 
     FastList lst = {};
 fprintf (stderr,"lol");
