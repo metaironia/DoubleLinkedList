@@ -72,8 +72,8 @@ enum ListStatus FillFastList (FastList *const list_for_fill, size_t start_pos) {
 
     assert (list_for_fill);
 
-    for (size_t i = start_pos; i < list_for_fill -> capacity - 1; i++)
-        FastListFreeElem (list_for_fill, i + 1);
+    for (size_t i = list_for_fill -> capacity - 1; i > start_pos; i--)
+        FastListFreeElem (list_for_fill, i);
 
     ON_DEBUG (FAST_LIST_DUMP (list_for_fill));
 
@@ -220,8 +220,13 @@ enum ListStatus FastListRemoveElem (FastList *const list_for_remove_elem, const 
 
     LIST_VERIFY (list_for_remove_elem);
 
+    size_t prev_of_index_remove = (list_for_remove_elem -> mainItems)[index_in_list_remove].prev;
+    size_t next_of_index_remove = (list_for_remove_elem -> mainItems)[index_in_list_remove].next;
+
     if (FastListFreeElem (list_for_remove_elem, index_in_list_remove) == LIST_STATUS_FAIL)
         return LIST_STATUS_FAIL;
+
+    FastListConnectNeighbourElems (list_for_remove_elem, prev_of_index_remove, next_of_index_remove);
 
     (list_for_remove_elem -> list_size) -= 1;
 
@@ -284,7 +289,7 @@ enum ListStatus FastListIncreaseCapacity (FastList *const list_for_increase_cap)
 
     memset (*ptr_to_fast_list_elems + prev_capacity, 0, size_of_new_elems_in_bytes);
 
-    for (size_t i = prev_capacity; i < new_capacity; i++)
+    for (size_t i = new_capacity - 1; i >= prev_capacity; i--)
         FastListFreeElem (list_for_increase_cap, i);
 
     ON_DEBUG (FAST_LIST_DUMP (list_for_increase_cap));

@@ -74,7 +74,7 @@ enum ListStatus FastListGraphDump (const FastList *list_for_graph_dump) {
 
     LIST_VERIFY (list_for_graph_dump);
 
-    FILE *graph_dump_file = fopen ("graph_dump.dot", "w");
+    FILE *graph_dump_file = fopen ("graph_dump_list.dot", "w");
 
     if (graph_dump_file == NULL)
         return LIST_STATUS_FAIL;
