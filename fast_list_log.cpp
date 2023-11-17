@@ -6,7 +6,7 @@
 #include "fast_list_func.h"
 
 
-FILE *LOG_FILE = CreateLogFile ("list_log.txt");
+FILE *LOG_FILE = CreateLogFile ("fast_list_log.txt");
 
 FILE *CreateLogFile (const char *log_file_name) {
 
@@ -74,7 +74,7 @@ enum ListStatus FastListGraphDump (const FastList *list_for_graph_dump) {
 
     LIST_VERIFY (list_for_graph_dump);
 
-    FILE *graph_dump_file = fopen ("graph_dump_list.dot", "w");
+    FILE *graph_dump_file = fopen ("graph_dump_fast_list.dot", "w");
 
     if (graph_dump_file == NULL)
         return LIST_STATUS_FAIL;
