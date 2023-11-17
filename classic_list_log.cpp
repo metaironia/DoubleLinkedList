@@ -29,8 +29,12 @@ void CloseLogFile (void) {
 }
 
 enum ListStatus ClassicListDump (const ClassicList *list_for_dump, const char *file_called,
-                              const char *func_called,       const int line_called,
-                              const char *list_name) {
+                                 const char *func_called,          const int line_called,
+                                 const char *list_name) {
+
+    assert (file_called);
+    assert (func_called);
+    assert (list_name);
 
     LOG_PRINT (LOG_FILE, "List[0x%p] \"%s\" from %s(%d) %s() \n", list_for_dump, list_name,
                           file_called, line_called, func_called);
@@ -119,6 +123,7 @@ enum ListStatus ClassicListDotFileEnd (FILE *dot_file) {
 enum ListStatus ClassicListDotFileInfo (FILE *dot_file, const ClassicList *list_for_info) {
 
     assert (dot_file);
+    assert (list_for_info);
 
     fprintf(dot_file, "info [shape = record, style = filled, fillcolor = \"yellow\","
                       "label = \"FREE: 0x%p | SIZE: %Iu | CAPACITY: %Iu\","

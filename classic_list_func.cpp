@@ -88,6 +88,8 @@ enum ListStatus ClassicListConnectNeighbourElems (ClassicList *const list_for_co
                                                   ClassicListMainItems *second_elem_ptr) {
 
     assert (list_for_connect_elems);
+    assert (first_elem_ptr);
+    assert (second_elem_ptr);
 
     first_elem_ptr -> next  = second_elem_ptr;
 
@@ -246,6 +248,7 @@ enum ListStatus ClassicListFreeElem (ClassicList *const list_for_free_elem,
                                      ClassicListMainItems *ptr_to_free_elem) {
 
     assert (list_for_free_elem);
+    assert (ptr_to_free_elem);
 
     if (ptr_to_free_elem == &(list_for_free_elem -> mainItems)[DUMMY_ELEM_POS])
         return LIST_STATUS_FAIL;
@@ -266,6 +269,7 @@ enum ListStatus ClassicListGetElem (const ClassicList *const list_for_get_elem,
                                     ClassicListElem_t *ret_value) {
 
     assert (ret_value);
+    assert (ptr_to_elem_in_list);
 
     LIST_VERIFY (list_for_get_elem);
 
