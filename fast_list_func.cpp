@@ -203,6 +203,8 @@ enum ListStatus FastListAddElemAfter (FastList *const list_for_add_elem, const s
 
     *inserted_index = free_elem_index;
 
+    (list_for_add_elem -> list_size) += 1;
+
     ON_DEBUG (FAST_LIST_DUMP (list_for_add_elem));
 
     return LIST_STATUS_OK;
@@ -213,6 +215,8 @@ enum ListStatus FastListRemoveElem (FastList *const list_for_remove_elem, const 
     LIST_VERIFY (list_for_remove_elem);
 
     FastListFreeElem (list_for_remove_elem, index_in_list_remove);
+
+    (list_for_remove_elem -> list_size) -= 1;
 
     ON_DEBUG (FAST_LIST_DUMP (list_for_remove_elem));
 
@@ -247,4 +251,3 @@ enum ListStatus FastListGetElem (const FastList *const list_for_get_elem, const 
 
     return LIST_STATUS_OK;
 }
-

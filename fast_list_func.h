@@ -49,7 +49,7 @@ struct FastListMainItems {
 
 struct FastListControlItems {
 
-    FastListElem_t free;
+    int free;
 };
 
 struct FastList {

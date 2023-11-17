@@ -20,6 +20,7 @@ fprintf (stderr,"lol2");
 
     FastListAddElemAfter (&lst, test_pos, &test_pos, 10);
 
+    FastListGraphDump (&lst);
 
     FastListDtor (&lst);
 fprintf (stderr,"lol3");

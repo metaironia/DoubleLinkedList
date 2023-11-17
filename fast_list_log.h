@@ -31,4 +31,25 @@ enum ListStatus PrintFastListElem (const FastList *list_for_print);
 
 enum ListStatus LogPrintListError (const char *error_text);
 
+//---------------------------------- Graph dump -------------------------------------------------------------
+
+enum ListStatus FastListGraphDump (const FastList *list_for_graph_dump);
+
+enum ListStatus FastListDotFileBegin (FILE *dot_file);
+
+enum ListStatus FastListDotFileEnd (FILE *dot_file);
+
+enum ListStatus FastListDotFileInfo (FILE *dot_file, const FastList *list_for_info);
+
+enum ListStatus FastListDotFileColorElem (FILE *dot_file_for_color, const FastList *list_for_choose_color,
+                                          const size_t index);
+
+enum ListStatus FastListDotFileOutputElems (FILE *dot_file, const FastList *list_for_output_elems);
+
+enum ListStatus FastListDotFileDrawArrows (FILE *dot_file_for_arrows,
+                                           const FastList *list_for_draw_arrows);
+
+enum ListStatus FastListDotFileCenterElems (FILE * dot_file_for_center,
+                                            const FastList *list_for_center_elems);
+
 #endif
