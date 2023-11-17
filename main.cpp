@@ -19,6 +19,8 @@ fprintf (stderr,"lol2");
     size_t test_pos = DUMMY_ELEM_POS;
 
     FastListAddElemAfter (&lst, test_pos, &test_pos, 10);
+    FastListAddElemAfter (&lst, test_pos, &test_pos, 13);
+
 
     FastListGraphDump (&lst);
 

@@ -86,8 +86,7 @@ FastListMainItems *FastListStructArrayCtor (const FastList *const list_for_creat
 
 enum ListStatus FastListStructArrayDtor (FastList *list_for_arrs_destruct);
 
-enum ListStatus FastListStructArrayClear (FastList *const list_for_clear_struct,
-                                          const size_t lst_capacity);
+enum ListStatus FastListStructArrayClear (FastList *const list_for_clear_struct);
 
 enum ListStatus FillFastList (FastList *const list_for_fill, size_t start_pos);
 

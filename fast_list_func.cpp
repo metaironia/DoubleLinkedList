@@ -18,6 +18,7 @@ enum ListStatus FastListCtor (FastList *created_list, const size_t list_capacity
     created_list -> capacity  = list_capacity + 1;
     created_list -> list_size = 0;
     created_list -> mainItems = FastListStructArrayCtor (created_list);
+
     ON_DEBUG (FAST_LIST_DUMP (created_list));
 
     FastListCreateDummyNode (created_list);
@@ -33,6 +34,8 @@ enum ListStatus FastListDtor (FastList *list_for_destruct) {
     LIST_VERIFY (list_for_destruct);
 
     FastListStructArrayDtor (list_for_destruct);
+
+    memset (list_for_destruct, 0, sizeof (FastList));
 
     free (list_for_destruct);
     list_for_destruct = NULL;
@@ -56,7 +59,7 @@ enum ListStatus FastListStructArrayDtor (FastList *list_for_arr_destruct) {
 
     LIST_VERIFY (list_for_arr_destruct);
 
-    FastListStructArrayClear (list_for_arr_destruct, list_for_arr_destruct -> capacity);
+    FastListStructArrayClear (list_for_arr_destruct);
 
     free (list_for_arr_destruct -> mainItems);
 
@@ -104,12 +107,11 @@ enum ListStatus FastListCreateDummyNode (FastList *const list_for_create_dummy_n
     return LIST_STATUS_OK;
 }
 
-enum ListStatus FastListStructArrayClear (FastList *const list_for_clear_struct,
-                                          const size_t lst_capacity) {
+enum ListStatus FastListStructArrayClear (FastList *const list_for_clear_struct) {
 
     LIST_VERIFY (list_for_clear_struct);
 
-    size_t size_of_main_items = sizeof (FastListMainItems) * lst_capacity;
+    size_t size_of_main_items = sizeof (FastListMainItems) * (list_for_clear_struct -> capacity);
 
     memset (list_for_clear_struct -> mainItems, 0, size_of_main_items);
 
@@ -196,10 +198,10 @@ enum ListStatus FastListAddElemAfter (FastList *const list_for_add_elem, const s
 
     (list_for_add_elem -> mainItems)[free_elem_index].value = add_value;
 
+    (list_for_add_elem -> controlItems).free = (list_for_add_elem -> mainItems)[free_elem_index].prev;
+
     FastListConnectNeighbourElems (list_for_add_elem, index_in_list,   free_elem_index);
     FastListConnectNeighbourElems (list_for_add_elem, free_elem_index, index_in_list_next);
-
-    (list_for_add_elem -> controlItems).free = (list_for_add_elem -> mainItems)[free_elem_index].prev;
 
     *inserted_index = free_elem_index;
 
@@ -251,3 +253,15 @@ enum ListStatus FastListGetElem (const FastList *const list_for_get_elem, const 
 
     return LIST_STATUS_OK;
 }
+
+//enum ListStatus FastListIncreaseCapacity (const FastList *list_for_increase_cap) {
+//
+//    LIST_VERIFY (list_for_increase_cap);
+//
+//    list_for_increase_cap = (FastList *) realloc (list_for_increase_cap,
+//                                                 (list_for_increase_cap -> capacity) * 2);
+//
+//
+//
+//    return LIST_STATUS_OK;
+//}

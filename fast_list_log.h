@@ -52,4 +52,7 @@ enum ListStatus FastListDotFileDrawArrows (FILE *dot_file_for_arrows,
 enum ListStatus FastListDotFileCenterElems (FILE * dot_file_for_center,
                                             const FastList *list_for_center_elems);
 
+enum ListStatus FastListDotFileColorDummy (FILE *dot_file, const FastList *list_for_output_dummy);
+
+
 #endif

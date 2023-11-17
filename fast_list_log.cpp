@@ -35,7 +35,9 @@ enum ListStatus FastListDump (const FastList *list_for_dump, const char *file_ca
     LOG_PRINT (LOG_FILE, "List[0x%p] \"%s\" from %s(%d) %s() \n", list_for_dump, list_name,
                           file_called, line_called, func_called);
 
-    LOG_PRINT (LOG_FILE, "free = %Iu\n", (list_for_dump -> controlItems).free);
+    LOG_PRINT (LOG_FILE, "free = %d\n",      (list_for_dump -> controlItems).free);
+    LOG_PRINT (LOG_FILE, "size = %Iu\n",     (list_for_dump -> list_size));
+    LOG_PRINT (LOG_FILE, "capacity = %Iu\n", (list_for_dump -> capacity));
 
     LOG_PRINT (LOG_FILE, "Elements:\n");
 
@@ -99,7 +101,8 @@ enum ListStatus FastListDotFileBegin (FILE *dot_file) {
     assert (dot_file);
 
     fprintf(dot_file, "digraph G{\n"
-                      "rankdir=LR;\ngraph [bgcolor=white];\n");
+                      "rankdir = LR;\n"
+                      "graph [bgcolor = white];\n");
 
     return LIST_STATUS_OK;
 }
@@ -117,8 +120,8 @@ enum ListStatus FastListDotFileInfo (FILE *dot_file, const FastList *list_for_in
 
     assert (dot_file);
 
-    fprintf(dot_file, "info [shape=record, style=filled, fillcolor=\"yellow\","
-                      "label=\"FREE: %d | SIZE: %Iu | CAPACITY: %Iu\","
+    fprintf(dot_file, "info [shape = record, style = filled, fillcolor = \"yellow\","
+                      "label = \"FREE: %d | SIZE: %Iu | CAPACITY: %Iu\","
                       "fontcolor = \"black\", fontsize = 22];\n",
                       (list_for_info -> controlItems).free, list_for_info -> list_size,
                       list_for_info -> capacity);
@@ -126,16 +129,15 @@ enum ListStatus FastListDotFileInfo (FILE *dot_file, const FastList *list_for_in
     return LIST_STATUS_OK;
 }
 
-//enum ListStatus FastListDotFileDummyElem (FILE *dot_file, const FastList *list_for_output_dummy) {
-//
-//    assert (dot_file);
-//    assert (list_for_output_dummy);
-//
-//    fprintf(dot_file, "node0");
-//
-//
-//    return LIST_STATUS_OK;
-//}
+enum ListStatus FastListDotFileColorDummy (FILE *dot_file, const FastList *list_for_output_dummy) {
+
+    assert (dot_file);
+    assert (list_for_output_dummy);
+
+    fprintf(dot_file, "fillcolor = gray, color = black, ");
+
+    return LIST_STATUS_OK;
+}
 
 enum ListStatus FastListDotFileColorElem (FILE *dot_file_for_color, const FastList *list_for_choose_color,
                                           const size_t index) {
@@ -144,10 +146,10 @@ enum ListStatus FastListDotFileColorElem (FILE *dot_file_for_color, const FastLi
     assert (list_for_choose_color);
 
     if ((list_for_choose_color -> mainItems)[index].value == POISON)
-        fprintf (dot_file_for_color, "fillcolor=\"crimson\", color = black,");
+        fprintf (dot_file_for_color, "fillcolor = \"crimson\", color = black,");
 
     else
-        fprintf (dot_file_for_color, "fillcolor=\"lightgreen\", color = darkgreen,");
+        fprintf (dot_file_for_color, "fillcolor = \"lightgreen\", color = darkgreen,");
 
     return LIST_STATUS_OK;
 }
@@ -162,7 +164,11 @@ enum ListStatus FastListDotFileOutputElems (FILE *dot_file, const FastList *list
 
         fprintf (dot_file, "%d [shape=Mrecord, style=filled, ", i);
 
-        FastListDotFileColorElem (dot_file, list_for_output_elems, i);
+        if (i != DUMMY_ELEM_POS)
+            FastListDotFileColorElem (dot_file, list_for_output_elems, i);
+
+        else
+            FastListDotFileColorDummy (dot_file, list_for_output_elems);
 
         fprintf (dot_file, " label=\" ");
 
@@ -214,7 +220,7 @@ enum ListStatus FastListDotFileDrawArrows (FILE *dot_file_for_arrows,
     return LIST_STATUS_OK;
 }
 
-enum ListStatus FastListDotFileCenterElems (FILE * dot_file_for_center,
+enum ListStatus FastListDotFileCenterElems (FILE *dot_file_for_center,
                                             const FastList *list_for_center_elems) {
 
     assert (dot_file_for_center);
